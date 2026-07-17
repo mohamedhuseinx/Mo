@@ -1,0 +1,53 @@
+name: Update IPTV Channels
+
+# Runs automatically every day, and can also be triggered manually from the
+# "Actions" tab on GitHub ("Run workflow" button).
+on:
+  schedule:
+    - cron: '0 3 * * *'   # every day at 03:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-channels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Write IPTV credentials (from GitHub Secrets)
+        run: |
+          mkdir -p tools
+          cat > tools/iptv_credentials.json <<EOF
+          {
+            "host": "${{ secrets.IPTV_HOST }}",
+            "port": "${{ secrets.IPTV_PORT }}",
+            "username": "${{ secrets.IPTV_USERNAME }}",
+            "password": "${{ secrets.IPTV_PASSWORD }}"
+          }
+          EOF
+
+      - name: Download latest M3U and regenerate channel data
+        run: python tools/update_channels_from_m3u.py
+
+      - name: Validate regenerated channels.json
+        run: |
+          python -c "import json; d = json.load(open('data/channels.json', encoding='utf-8')); assert isinstance(d, list) and len(d) > 0; print(f'channels.json OK: {len(d)} channels')"
+
+      - name: Remove credentials file before committing
+        run: rm -f tools/iptv_credentials.json
+
+      - name: Commit and push changes (if any)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/channels.json js/live_channels.js sw.js "tv_channels_Ugeen_VIPg6SEke (3).m3u"
+          git diff --cached --quiet || git commit -m "Auto-update IPTV channels from M3U"
+          git push

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# tools/check_iptv_links.py runtime output
+data/channels_healthcheck*.json
+data/*.bak
+
+# IPTV panel credentials - never commit real login/password
+tools/iptv_credentials.json
