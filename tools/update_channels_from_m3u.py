@@ -127,6 +127,7 @@ def parse_m3u(path):
 
 
 def write_js(channels):
+    os.makedirs(os.path.dirname(JS_PATH), exist_ok=True)
     with open(JS_PATH, 'w', encoding='utf-8') as out:
         out.write('/* Auto-generated from M3U playlist — do not edit manually.\n')
         out.write('   NOTE: no longer loaded by index.html directly - see js/data.js header\n')
@@ -138,6 +139,7 @@ def write_js(channels):
 
 
 def write_json(channels):
+    os.makedirs(os.path.dirname(JSON_PATH), exist_ok=True)
     with open(JSON_PATH, 'w', encoding='utf-8') as out:
         json.dump(channels, out, ensure_ascii=False, separators=(',', ':'))
     print(f'Wrote {JSON_PATH} ({len(channels)} channels)')
