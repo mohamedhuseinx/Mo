@@ -2,9 +2,9 @@
    MO - Everything For You | SERVICE WORKER
    ================================================ */
 
-const CACHE_NAME = 'mo-v2';
-const STATIC_CACHE = 'mo-static-v2';
-const DYNAMIC_CACHE = 'mo-dynamic-v2';
+const CACHE_NAME = 'mo-v3';
+const STATIC_CACHE = 'mo-static-v3';
+const DYNAMIC_CACHE = 'mo-dynamic-v3';
 
 // NOTE: paths are relative to this file's own location (the site root),
 // so the service worker keeps working when the app isn't hosted at a
